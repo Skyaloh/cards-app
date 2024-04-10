@@ -20,7 +20,17 @@ Testclient:
  - client_id: read-write
  - client_secret: testclient
 
-Test User:
+Test User 1 (ROLE_ADMIN):
+ - username: admin@gmail.com
+ - password: admin1234
+ - grant_type: password
+
+Test User 2  (ROLE_MEMBER):
+ - username: admin@gmail.com
+ - password: admin1234
+ - grant_type: password
+
+Test User 3  (ROLE_MEMBER):
  - username: admin@gmail.com
  - password: admin1234
  - grant_type: password
