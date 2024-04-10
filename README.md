@@ -26,12 +26,12 @@ Test User 1 (ROLE_ADMIN):
  - grant_type: password
 
 Test User 2  (ROLE_MEMBER):
- - username: admin@gmail.com
+ - username: reader@gmail.com
  - password: admin1234
  - grant_type: password
 
 Test User 3  (ROLE_MEMBER):
- - username: admin@gmail.com
+ - username: modifier@gmail.com
  - password: admin1234
  - grant_type: password
 
