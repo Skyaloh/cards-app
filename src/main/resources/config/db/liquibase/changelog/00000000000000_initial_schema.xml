@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="00000000000000" author="kyalo (generated)">
+        <createSequence sequenceName="sequence_generator" startValue="1050" incrementBy="50"/>
+    </changeSet>
+
+    <changeSet id="00000000000001" author="kyalo (generated)">
+        <createTable tableName="user">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_user"/>
+            </column>
+            <column name="full_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_number" type="VARCHAR(50)"/>
+
+
+            <column name="country" type="VARCHAR(150)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="phone" type="VARCHAR(20)"/>
+
+            <column name="email" type="VARCHAR(150)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+
+            <column name="user_name" type="VARCHAR(150)" >
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+
+            <column name="password" type="VARCHAR(225)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="account_locked" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="credentials_expired" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+
+
+            <column name="account_expired" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="enabled" type="boolean" defaultValue="true">
+                <constraints nullable="false"/>
+            </column>
+
+
+            <column name="created_date" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="modified_date" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="00000000000002" author="kyalo (generated)">
+        <createTable tableName="authority">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_authority"/>
+            </column>
+
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_date" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="modified_date" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="00000000000003" author="kyalo (generated)">
+        <createTable tableName="user_authorities">
+
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="authority_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="00000000000004" author="kyalo (generated)">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_authorities"
+                                 constraintName="fk_user_authorities_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+
+        <addForeignKeyConstraint baseColumnNames="authority_id"
+                                 baseTableName="user_authorities"
+                                 constraintName="fk_user_authorities_authority_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="authority"/>
+
+    </changeSet>
+
+    <changeSet id="00000000000005" author="kyalo (generated)">
+        <createTable tableName="oauth_client_details">
+
+            <column name="client_id" type="VARCHAR(255)"/>
+
+            <column name="resource_ids" type="VARCHAR(255)"/>
+
+            <column name="client_secret" type="VARCHAR(255)"/>
+
+            <column name="scope" type="VARCHAR(255)"/>
+
+            <column name="authorized_grant_types" type="VARCHAR(255)"/>
+
+            <column name="web_server_redirect_uri" type="VARCHAR(255)"/>
+
+            <column name="authorities" type="VARCHAR(255)"/>
+
+            <column name="access_token_validity" type="integer"/>
+
+            <column name="refresh_token_validity" type="integer"/>
+
+            <column name="additional_information" type="VARCHAR(255)"/>
+
+            <column name="autoapprove" type="VARCHAR(255)"/>
+
+        </createTable>
+    </changeSet>
+
+
+
+    <changeSet id="00000000000006" author="kyalo (generated)">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*)
+                FROM OAUTH_CLIENT_DETAILS
+                WHERE client_id = 'read-only' OR client_id = 'read-write';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+
+            INSERT INTO OAUTH_CLIENT_DETAILS(CLIENT_ID, RESOURCE_IDS, CLIENT_SECRET, SCOPE, AUTHORIZED_GRANT_TYPES, AUTHORITIES, ACCESS_TOKEN_VALIDITY, REFRESH_TOKEN_VALIDITY)
+            VALUES ('read-only', 'resource-server-rest-api',
+                       /*spartan*/'$2a$04$GFgHMAomCf6GqkwMhEGHeu4UEFHlGB9AjGmmw5GFId.HTLLYbNWQC',
+                    'read', 'password,authorization_code,refresh_token,implicit', 'USER', 10800, 2592000);
+
+
+            INSERT INTO OAUTH_CLIENT_DETAILS(CLIENT_ID, RESOURCE_IDS, CLIENT_SECRET, SCOPE, AUTHORIZED_GRANT_TYPES, AUTHORITIES, ACCESS_TOKEN_VALIDITY, REFRESH_TOKEN_VALIDITY)
+            VALUES ('read-write', 'resource-server-rest-api',
+                       /*testclient*/'$2a$12$3kmvrj0klm7aDuQWrXkDVuiSiK6JtuYMVqrvJyTUzTNM349dtLydC',
+                    'read,write', 'password,authorization_code,refresh_token,implicit', 'USER', 10800, 2592000);
+
+        </sql>
+    </changeSet>
+
+    <changeSet id="00000000000007" author="kyalo (generated)">
+        <createTable tableName="oauth_client_token">
+
+            <column name="token_id" type="VARCHAR(255)"/>
+
+            <column name="token" type="text"/>
+
+            <column name="authentication_id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_oauth_client_token"/>
+            </column>
+
+            <column name="user_name" type="VARCHAR(255)"/>
+
+            <column name="client_id" type="VARCHAR(255)"/>
+
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="00000000000008" author="kyalo (generated)">
+        <createTable tableName="oauth_access_token">
+
+            <column name="token_id" type="VARCHAR(255)"/>
+
+            <column name="token" type="longvarbinary"/>
+
+            <column name="authentication_id" type="VARCHAR(255)">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_oauth_access_token"/>
+            </column>
+
+            <column name="user_name" type="VARCHAR(255)"/>
+
+            <column name="client_id" type="VARCHAR(255)"/>
+
+            <column name="authentication" type="longvarbinary"/>
+
+            <column name="refresh_token" type="VARCHAR(255)"/>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="00000000000009" author="kyalo (generated)">
+        <createTable tableName="oauth_refresh_token">
+
+            <column name="token_id" type="VARCHAR(255)"/>
+
+            <column name="token" type="text"/>
+
+            <column name="authentication" type="text"/>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="00000000000010" author="kyalo (generated)">
+        <createTable tableName="oauth_code">
+
+            <column name="code" type="VARCHAR(255)"/>
+
+            <column name="authentication" type="text"/>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="00000000000011" author="kyalo (generated)">
+        <createTable tableName="oauth_approvals">
+            <column name="userid" type="VARCHAR(255)"/>
+            <column name="clientid" type="VARCHAR(255)"/>
+            <column name="scope" type="VARCHAR(255)"/>
+            <column name="status" type="VARCHAR(20)"/>
+            <column name="expiresat" type="timestamp"/>
+            <column name="lastmodifiedat" type="timestamp"/>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="00000000000012" author="kyalo (generated)">
+
+        <sql>
+
+            insert into user (id, full_name, country, phone, email, user_name, password, account_locked, credentials_expired, account_expired, enabled, created_date, modified_date)
+            values (1, 'Admin', 'kenya', '07123456789', 'admin@gmail.com', 'admin', '$2a$08$qvrzQZ7jJ7oy2p/msL4M0.l83Cd0jNsX6AJUitbgRXGzge4j035ha', false, false, false, true, '2021-06-10 09:29:43.824000', '2021-06-10 09:29:43.824000');
+
+            insert into user (id, full_name, country, phone, email, user_name, password, account_locked, credentials_expired, account_expired, enabled, created_date, modified_date)
+            values (2, 'Reader', 'kenya', '07123456780', 'reader@gmail.com', 'reader', '$2a$08$qvrzQZ7jJ7oy2p/msL4M0.l83Cd0jNsX6AJUitbgRXGzge4j035ha', false, false, false, true, '2021-06-10 09:29:43.824000', '2021-06-10 09:29:43.824000');
+
+            insert into user (id, full_name, country, phone, email, user_name, password, account_locked, credentials_expired, account_expired, enabled, created_date, modified_date)
+            values (3, 'Modifier', 'kenya', '07123456780', 'modifier@gmail.com', 'modifier', /*testclient*/'$2a$08$qvrzQZ7jJ7oy2p/msL4M0.l83Cd0jNsX6AJUitbgRXGzge4j035ha', false, false, false, true, '2021-06-10 09:29:43.824000', '2021-06-10 09:29:43.824000');
+
+
+
+        </sql>
+    </changeSet>
+
+    <changeSet id="00000000000013" author="kyalo (generated)">
+
+        <sql>
+
+            INSERT INTO AUTHORITY(ID, NAME) VALUES (1, 'ROLE_ADMIN');
+            INSERT INTO AUTHORITY(ID, NAME) VALUES (2, 'ROLE_MEMBER');
+
+
+            INSERT INTO USER_AUTHORITIES(USER_ID, AUTHORITY_ID) VALUES (1, 1);
+            INSERT INTO USER_AUTHORITIES(USER_ID, AUTHORITY_ID) VALUES (1, 2);
+            INSERT INTO USER_AUTHORITIES(USER_ID, AUTHORITY_ID) VALUES (2, 2);
+            INSERT INTO USER_AUTHORITIES(USER_ID, AUTHORITY_ID) VALUES (3, 2);
+
+        </sql>
+    </changeSet>
+
+    <changeSet id="00000000000014" author="kyalo (generated)">
+        <createTable tableName="card">
+            <column autoIncrement="true" name="id" type="BIGINT" >
+                <constraints primaryKey="true" nullable="false" primaryKeyName="pk_user"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="description" type="VARCHAR(255)"/>
+
+            <column name="color" type="VARCHAR(50)"/>
+
+            <column name="status" type="VARCHAR(50)"/>
+
+            <column name="user_id" type="bigint"/>
+
+            <column name="created_date" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="modified_date" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="00000000000015" author="kyalo (generated)">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="card"
+                                 constraintName="fk_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
+    </changeSet>
+
+
+</databaseChangeLog>
