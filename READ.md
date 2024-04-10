@@ -1,5 +1,9 @@
 # Getting Started
 
+API Documentation
+
+http://localhost:8082/swagger-ui/index.html
+
 Basic Authentication: username: read-write, password: testclient
 ```
 curl --location 'http://localhost:8082/oauth/token' \
